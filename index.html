@@ -1,166 +1,85 @@
 <!doctype html>
 <html lang="vi"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
 <title>Cupid's Calling</title>
 <style>
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;overflow:hidden;background:#f6c9cf}
-  body.an-chuot,body.an-chuot *{cursor:none}
-  /* Nen: KV phu kin man hinh */
+  html,body{margin:0;height:100%;background:#f6c9cf;
+    font-family:system-ui,"Segoe UI",sans-serif}
   .nen{position:fixed;inset:0;background:url(kv.jpg) center/cover no-repeat}
-  /* Slide: khung 16:9 lon nhat con vua cho — vi tri va kich thuoc do
-     ham datBoCuc() tinh, tuy man hinh du rong de logo nam hai ben hay
-     phai chua mot dai phia tren cho logo. */
-  .sl{position:fixed;z-index:1;aspect-ratio:16/9;
-      border-radius:min(1.2vmin,14px);overflow:hidden;background:#1a0618;
-      box-shadow:0 0 0 2px rgba(255,255,255,.85),
-                 0 0 0 9px rgba(255,255,255,.22),
-                 0 28px 70px -10px rgba(140,10,50,.55),
-                 0 0 120px rgba(255,180,200,.5)}
-  .logo{position:fixed;z-index:1;height:auto;pointer-events:none;
-      /* Quang sang trang om theo net chu: logo hong van doc ro tren canh
-         hoa hong dam o hai ben KV */
-      filter:drop-shadow(0 0 3px rgba(255,255,255,.95))
-             drop-shadow(0 0 14px rgba(255,255,255,.75))
-             drop-shadow(0 0 32px rgba(255,240,244,.6))}
-  /* Khung nhung dung o kich thuoc CO DINH 1440 x (810 + 2 x 90) roi phong
-     theo --s cho vua khung: Canva doi kieu dan trang khi khung qua rong
-     (slide bi lech), nen khong de no thay kich thuoc that.
-     Them 90px tren/duoi: Canva can slide vao giua, thanh dieu khien cua
-     Canva nam o dai duoi va bi cat bo boi overflow:hidden. */
-  .sl{--s:1}
-  .sl iframe{border:0;display:block;position:absolute;left:0;
-      top:calc(-90px * var(--s));width:1440px;height:990px;
-      transform:scale(var(--s));transform-origin:0 0}
-  /* Lop trong suot phu len khung: chan chuot vao Canva (thanh dieu khien
-     cua Canva khong hien ra, nguoi xem khong lat ngoai thu tu), dong thoi
-     bam trai/phai de lat. */
-  .ph{position:absolute;inset:0;z-index:2}
-  /* Nut toan man hinh — an cung con tro chuot khi dung yen */
-  .nut{position:fixed;right:calc(3.5vmin + 14px);bottom:calc(3.5vmin + 14px);z-index:3;
-      display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;
-      font:600 14px/1 system-ui,"Segoe UI",sans-serif;color:#fff;cursor:pointer;
-      background:rgba(214,58,104,.82);border:1px solid rgba(255,255,255,.55);
-      box-shadow:0 6px 20px rgba(120,10,45,.35);backdrop-filter:blur(6px);
-      transition:opacity .3s,background .2s}
-  .nut:hover{background:rgba(232,72,120,.95)}
-  .nut svg{width:16px;height:16px}
-  body.an-chuot .nut{opacity:0;pointer-events:none}
+  .hop{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(420px,calc(100vw - 32px));padding:34px 30px 28px;border-radius:22px;
+    background:rgba(255,255,255,.62);backdrop-filter:blur(18px) saturate(1.2);
+    -webkit-backdrop-filter:blur(18px) saturate(1.2);
+    border:1px solid rgba(255,255,255,.8);
+    box-shadow:0 30px 80px -20px rgba(140,10,50,.45);text-align:center}
+  .hop img.su-kien{width:78%;display:block;margin:0 auto 6px}
+  .hop img.cty{height:34px;display:block;margin:0 auto 18px}
+  .hop p{margin:0 0 18px;color:#8a2a45;font-size:14px}
+  input{width:100%;font:inherit;font-size:16px;padding:13px 16px;border-radius:12px;
+    border:1px solid rgba(190,60,100,.35);background:rgba(255,255,255,.9);color:#4a1022;
+    outline:none}
+  input:focus{border-color:#d63a68;box-shadow:0 0 0 3px rgba(214,58,104,.18)}
+  button{width:100%;margin-top:12px;font:inherit;font-weight:600;font-size:16px;
+    padding:13px;border:0;border-radius:12px;color:#fff;cursor:pointer;
+    background:linear-gradient(180deg,#e2507e,#c92f5e)}
+  button:disabled{opacity:.6;cursor:wait}
+  .loi{min-height:20px;margin-top:10px;font-size:13px;color:#c0204e}
 </style></head>
 <body>
 <div class="nen"></div>
-<img class="logo" id="lt" src="logo-newway.png" alt="Newway Realty">
-<img class="logo" id="lp" src="logo-cupid.png" alt="Cupid's Calling">
-<div class="sl">
-  <iframe id="k" tabindex="-1"
-          allow="autoplay; fullscreen" allowfullscreen></iframe>
-  <div class="ph" id="ph"></div>
-</div>
-<button class="nut" id="nut" type="button">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-       stroke-linecap="round" stroke-linejoin="round"><path id="bt"
-       d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
-  <span id="cn">Toàn màn hình</span>
-</button>
-
+<form class="hop" id="f" autocomplete="off">
+  <img class="cty" src="logo-newway.png" alt="Newway Realty">
+  <img class="su-kien" src="logo-cupid.png" alt="Cupid's Calling">
+  <p>Nhập mật khẩu để vào trình chiếu</p>
+  <input id="mk" type="password" placeholder="Mật khẩu" autofocus required>
+  <button id="nut" type="submit">Vào xem</button>
+  <div class="loi" id="loi"></div>
+</form>
 <script>
-  // Phim: ← → (hoac PageUp/PageDown, cai bam slide) lat trang ·
-  //       F hoac nut goc phai = toan man hinh (Esc de thoat) ·
-  //       bam vao 1/3 trai cua slide = lui, con lai = tien.
-  const GOC = "https://www.canva.com/design/DAGNoatK0Xw/zi32EsMemaXjzDXuyqK6IQ/view";
-  // Thu tu lat: mac dinh bo trang 2-13 trong 69 trang. Doi nhanh qua dia chi:
-  //   ?bo=2-13,20,25-27&tong=69
-  const q = new URLSearchParams(location.search);
-  const TONG = Math.min(999, Math.max(1, parseInt(q.get('tong'), 10) || 69));
-  const BO = new Set();
-  for (const p of (q.get('bo') || '2-13').split(',')) {
-    const m = p.trim().match(/^(\d+)(?:-(\d+))?$/);
-    if (!m) continue;
-    const a = +m[1], b = m[2] ? +m[2] : a;
-    for (let n = Math.min(a, b); n <= Math.max(a, b); n++) BO.add(n);
-  }
-  const THU_TU = [];
-  for (let n = 1; n <= TONG; n++) if (!BO.has(n)) THU_TU.push(n);
-  let i = 0;
-  const k = document.getElementById('k');
-  k.src = GOC + '?embed#' + THU_TU[0];
+// Boc trong ham rieng: trang slide ghi de len cung cua so nay va co bien
+// trung ten (vd. 'nut'); de bien o pham vi toan cuc se lam script slide hong.
+(() => {
+  // Noi dung trang trinh chieu da ma hoa (AES-256-GCM, khoa PBKDF2 tu mat khau)
+  const MUOI = "yZ7unT7ELfHDK/xKbk5kEg==", IV = "qFrqbIvCk7sBgyNj", VONG = 600000;
+  const MA = "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";
+  const tu64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 
-  function di(n) {
-    const moi = Math.max(0, Math.min(THU_TU.length - 1, n));
-    if (moi === i) return;
-    i = moi;
-    const dich = GOC + '?embed#' + THU_TU[i];
-    // Chi khac phan '#' nen trinh duyet nhay trong cung tai lieu, khong nap lai.
-    try { k.contentWindow.location.href = dich; }
-    catch (e) { k.src = dich; }
+  async function moKhoa(mk) {
+    const vl = await crypto.subtle.importKey('raw', new TextEncoder().encode(mk),
+      'PBKDF2', false, ['deriveKey']);
+    const k = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: tu64(MUOI), iterations: VONG, hash: 'SHA-256' },
+      vl, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const ro = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: tu64(IV) }, k, tu64(MA));
+    return new TextDecoder().decode(ro);
   }
 
-  // Bo cuc: slide lon nhat co the + logo Newway goc trai, logo su kien goc
-  // phai. Man rong: logo nam o khoang trong hai ben slide. Man gan 16:9:
-  // chua mot dai phia tren cho logo, slide nam ngay ben duoi.
-  const sl = document.querySelector('.sl');
-  const lt = document.getElementById('lt'), lp = document.getElementById('lp');
-  const TL_TRAI = 285 / 140, TL_PHAI = 1247 / 461;   // rong/cao cua logo
-  function datBoCuc() {
-    const W = innerWidth, H = innerHeight, m = Math.min(W, H) * 0.035;
-    let rong = Math.min(W - 2 * m, (H - 2 * m) * 16 / 9);
-    const hoc = (W - rong) / 2;                  // khoang trong moi ben
-    let top, cao;                                // cao = chieu cao logo phai
-    if (hoc - 2 * m >= H * 0.22) {               // du cho dat logo hai ben
-      cao = Math.min((hoc - 2 * m) / TL_PHAI, H * 0.16);
-      top = (H - rong * 9 / 16) / 2;
-    } else {                                     // chua dai tren cho logo
-      cao = Math.max(48, H * 0.1);
-      top = cao + 1.6 * m;
-      rong = Math.min(W - 2 * m, (H - top - m) * 16 / 9);
+  function hien(html) { document.open(); document.write(html); document.close(); }
+
+  // Nho mat khau trong tab nay (tai lai trang khong phai nhap lai);
+  // dong tab la mat.
+  let daLuu = null;
+  try { daLuu = sessionStorage.getItem('qtpn'); } catch (e) {}
+  if (daLuu) moKhoa(daLuu).then(hien).catch(() => {
+    try { sessionStorage.removeItem('qtpn'); } catch (e) {}
+  });
+
+  const f = document.getElementById('f'), nut = document.getElementById('nut'),
+        loi = document.getElementById('loi'), o = document.getElementById('mk');
+  f.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    nut.disabled = true; nut.textContent = 'Đang mở…'; loi.textContent = '';
+    try {
+      const html = await moKhoa(o.value);
+      try { sessionStorage.setItem('qtpn', o.value); } catch (e) {}
+      hien(html);
+    } catch (err) {
+      loi.textContent = 'Sai mật khẩu, vui lòng thử lại.';
+      nut.disabled = false; nut.textContent = 'Vào xem'; o.select();
     }
-    Object.assign(sl.style, { width: rong + 'px', left: (W - rong) / 2 + 'px',
-                              top: top + 'px' });
-    sl.style.setProperty('--s', rong / 1440);
-    Object.assign(lp.style, { width: cao * TL_PHAI + 'px', top: m + 'px', right: m + 'px' });
-    const caoTrai = cao * 0.95;
-    Object.assign(lt.style, { width: caoTrai * TL_TRAI + 'px', top: m + 'px', left: m + 'px' });
-  }
-  addEventListener('resize', datBoCuc);
-  datBoCuc();
-
-  function toanManHinh() {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else document.documentElement.requestFullscreen().catch(() => {});
-  }
-  const nut = document.getElementById('nut');
-  nut.addEventListener('click', () => { toanManHinh(); nut.blur(); });
-  document.addEventListener('fullscreenchange', () => {
-    const fs = !!document.fullscreenElement;
-    document.body.classList.toggle('fs', fs);
-    document.getElementById('cn').textContent = fs ? 'Thoát' : 'Toàn màn hình';
-    document.getElementById('bt').setAttribute('d', fs
-      ? 'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5'
-      : 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5');
   });
-
-  addEventListener('keydown', (e) => {
-    const t = e.key;
-    if (t === 'ArrowRight' || t === 'PageDown' || t === ' ') { e.preventDefault(); di(i + 1); }
-    else if (t === 'ArrowLeft' || t === 'PageUp') { e.preventDefault(); di(i - 1); }
-    else if (t === 'Home') di(0);
-    else if (t === 'End') di(THU_TU.length - 1);
-    else if (t === 'f' || t === 'F') toanManHinh();
-  });
-
-  document.getElementById('ph').addEventListener('click', (e) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    di((e.clientX - r.left) < r.width / 3 ? i - 1 : i + 1);
-  });
-
-  // An con tro chuot va nut sau 2,5 giay dung yen
-  let hen;
-  function hienChuot() {
-    document.body.classList.remove('an-chuot');
-    clearTimeout(hen);
-    hen = setTimeout(() => document.body.classList.add('an-chuot'), 2500);
-  }
-  addEventListener('mousemove', hienChuot);
-  hienChuot();
+})();
 </script>
 </body></html>
